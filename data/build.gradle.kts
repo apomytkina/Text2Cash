@@ -23,10 +23,17 @@ android {
 }
 
 dependencies {
-
+    // AndroidX Core
     implementation(libs.androidx.core.ktx)
+
+    // UI Libraries
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    // Data Storage
+    implementation(libs.datastore.preferences)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
