@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.text2cash.camera.CameraScreen
 import com.example.text2cash.home.HomeScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,7 +26,7 @@ fun TranslatorCurrencyApp() {
     val navController = rememberNavController()
     NavHost(navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
-//        composable("camera") { CameraScanScreen(navController) }
+        composable("camera") { CameraScreen(navController) }
 //        composable("result") { ResultScreen(navController) }
     }
 }

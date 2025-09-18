@@ -33,6 +33,14 @@ dependencies {
     // Data Storage
     implementation(libs.datastore.preferences)
 
+    // Text Recognition
+    implementation(libs.mlkit.text.recognition)
+
+    // DI
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.translate)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

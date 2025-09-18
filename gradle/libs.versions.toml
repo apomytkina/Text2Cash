@@ -5,7 +5,7 @@ coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.9.3"
+lifecycleRuntimeKtx = "2.9.4"
 activityCompose = "1.11.0"
 composeBom = "2025.09.00"
 lifecycleViewModelCompose = "2.9.3"
@@ -18,6 +18,8 @@ moshi = "1.15.0"
 appcompat = "1.7.1"
 material = "1.13.0"
 datastore = "1.1.7"
+mlkit-text-recognition = "16.0.1"
+translate = "17.0.3"
 
 [libraries]
 # AndroidX Core
@@ -63,6 +65,10 @@ okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-i
 
 # Data Storage
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+
+# Text Recognition
+mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkit-text-recognition" }
+translate = { group = "com.google.mlkit", name = "translate", version.ref = "translate" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
