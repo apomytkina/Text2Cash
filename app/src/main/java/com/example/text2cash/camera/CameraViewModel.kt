@@ -38,10 +38,3 @@ internal class CameraViewModel @Inject constructor(
         }
     }
 }
-
-data class CameraUiState(
-    val isLoading: Boolean = false,
-    val recognizedText: String? = null,
-    val errorMessage: String? = null,
-    val imageUri: Uri? = null
-)
