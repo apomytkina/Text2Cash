@@ -49,6 +49,16 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
 
+    // Camera View
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.extensions)
+
+    // Compose
+    implementation(libs.coil.compose)
+
     // Dependency Injection
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
