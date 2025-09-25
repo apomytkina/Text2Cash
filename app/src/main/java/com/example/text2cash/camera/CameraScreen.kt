@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -23,8 +24,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -33,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 
@@ -44,6 +48,7 @@ internal fun CameraScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val selectedImageUri by viewModel.selectedImageUri.collectAsState()
+    val lifecycleOwner = LocalContext.current as LifecycleOwner
 
     val galleryPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         Manifest.permission.READ_MEDIA_IMAGES
@@ -51,12 +56,25 @@ internal fun CameraScreen(
         Manifest.permission.READ_EXTERNAL_STORAGE
     }
 
+    val previewView = remember {
+        PreviewView(context).apply {
+            layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        }
+    }
+
+    LaunchedEffect(previewView) {
+        viewModel.startCamera(lifecycleOwner, previewView)
+    }
+
     val galleryPickerLauncher = rememberGalleryPickerLauncher(viewModel)
     val cameraPermissionLauncher = rememberCameraPermissionLauncher(context, viewModel)
-    val galleryPermissionLauncher = rememberGalleryPermissionLauncher(context, galleryPickerLauncher,)
+    val galleryPermissionLauncher = rememberGalleryPermissionLauncher(
+        context,
+        galleryPickerLauncher
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ImageOrCameraSurface(selectedImageUri)
+        ImageOrCameraSurface(selectedImageUri, previewView)
 
         CameraControls(
             modifier = Modifier.align(Alignment.BottomCenter),
@@ -74,6 +92,7 @@ internal fun CameraScreen(
 @Composable
 private fun ImageOrCameraSurface(
     selectedImageUri: Uri?,
+    previewView: PreviewView,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
@@ -86,15 +105,8 @@ private fun ImageOrCameraSurface(
             )
         } ?: run {
             AndroidView(
-                factory = { ctx ->
-                    PreviewView(ctx).apply {
-                        layoutParams = ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxSize()
+                factory = { ctx -> previewView },
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }
@@ -119,13 +131,13 @@ private fun CameraControls(
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Button(
+                enabled = uiState !is CameraUiState.Loading,
                 onClick = {
                     if (ContextCompat.checkSelfPermission(
                             context,
                             Manifest.permission.CAMERA
                     ) == PackageManager.PERMISSION_GRANTED) {
                         viewModel.takePhotoAndRecognize()
-                    } else {
                         cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                     }
                 },
@@ -134,6 +146,7 @@ private fun CameraControls(
             }
 
             Button(
+                enabled = uiState !is CameraUiState.Loading,
                 onClick = {
                     if (
                         Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU ||
